@@ -41,7 +41,7 @@ export function SplashDots() {
     startBounce(dot1, 0);
     startBounce(dot2, motion.splash.dotDelay);
     startBounce(dot3, motion.splash.dotDelay * 2);
-  }, []);
+  }, [dot1, dot2, dot3]);
 
   const animatedStyle1 = useAnimatedStyle(() => ({
     transform: [{ translateY: dot1.value }],
