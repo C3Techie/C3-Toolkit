@@ -1,7 +1,6 @@
 #!/bin/sh
 set -e
 
-FIXED=0
 FAILED=0
 
 # Exclude generated/binary/vendor files from long-line payloads check, but ALLOW checking of .ts and .tsx files
@@ -24,23 +23,6 @@ fi
 
 STAGED=$(git diff --cached --name-only)
 
-# ── Helper: strip long-line injection from a file ─────────────────────────────
-fix_long_lines() {
-  file="$1"
-  # Truncate any line over 200 chars to the first 200 characters.
-  # This removes the hidden payload while keeping the legitimate code intact
-  # since real config lines are never this long.
-  awk 'length > 200 { print substr($0, 1, 200); next } { print }' "$file" > "${file}.cleaned"
-  mv "${file}.cleaned" "$file"
-}
-
-# ── Helper: remove createRequire shim lines ───────────────────────────────────
-fix_create_require() {
-  file="$1"
-  grep -v "createRequire\|from 'module'" "$file" > "${file}.cleaned"
-  mv "${file}.cleaned" "$file"
-}
-
 # ── Scan staged files ─────────────────────────────────────────────────────────
 for file in $STAGED; do
   [ -f "$file" ] || continue
@@ -50,19 +32,17 @@ for file in $STAGED; do
   if echo "$BASENAME" | grep -qE "^($LONG_LINE_EXCLUDE)$"; then
     : # skip silently
   elif awk 'length > 200 { found=1; exit } END { exit !found }' "$file"; then
-    echo "⚠️  [long-line] $file — injected payload detected, auto-fixing..."
-    fix_long_lines "$file"
-    git add "$file"
-    FIXED=1
+    echo "❌ [long-line] $file — suspiciously long line detected (> 200 chars)."
+    echo "   Please review the file and break up the line or verify it is not a payload."
+    FAILED=1
   fi
 
   # ── Check 2: createRequire in a config file ─────────────────────────────────
   if echo "$file" | grep -qE '\.(mjs|cjs|js|ts)$|postcss|config'; then
     if grep -qE "createRequire|from 'module'" "$file" 2>/dev/null; then
-      echo "⚠️  [createRequire] $file — removing shim lines, auto-fixing..."
-      fix_create_require "$file"
-      git add "$file"
-      FIXED=1
+      echo "❌ [createRequire] $file — forbidden dynamic module loading helper (createRequire) detected."
+      echo "   Review manually — code-based shims are blocked in configuration files."
+      FAILED=1
     fi
   fi
 
@@ -83,19 +63,9 @@ for file in $STAGED; do
   if [ "$IS_NODE" -eq 1 ] && echo "$file" | grep -q "postcss"; then
     SIZE=$(wc -c < "$file")
     if [ "$SIZE" -gt 500 ]; then
-      echo "⚠️  [file-size] $file is $SIZE bytes — likely injected, auto-fixing..."
-      # Restore to the known-good minimal config
-      cat > "$file" << 'EOF'
-const config = {
-  plugins: {
-    "@tailwindcss/postcss": {},
-  },
-};
-
-export default config;
-EOF
-      git add "$file"
-      FIXED=1
+      echo "❌ [file-size] $file is $SIZE bytes (exceeds maximum allowed size of 500 bytes for PostCSS configs)."
+      echo "   Please review and minimize the file size."
+      FAILED=1
     fi
   fi
 
@@ -118,13 +88,6 @@ if [ "$IS_NODE" -eq 1 ]; then
 
   echo "🔍 Running ESLint..."
   pnpm lint || { echo "❌ Lint check failed."; exit 1; }
-fi
-
-# ── Summary ─────────────────────────────────────────────────────────────
-if [ "$FIXED" -eq 1 ]; then
-  echo ""
-  echo "🔧 Auto-fixes were applied and re-staged."
-  echo "   Run 'git diff --cached' to review what changed before your commit proceeds."
 fi
 
 if [ "$FAILED" -eq 1 ]; then

@@ -2,7 +2,7 @@
 
 <!--- Describe your changes in detail -->
 
-This PR ...
+<!-- This PR ... -->
 
 ## **Ticket Number**
 
@@ -28,13 +28,13 @@ This PR ...
 <!--- Go over all the following points, and put an `x` in all the boxes that apply. -->
 <!--- If you're unsure about any of these, don't hesitate to ask. We're here to help! -->
 
-- [x] My code follows the code style of this project.
-- [x] This PR does not contain plagiarized content.
-- [x] The title and description of the PR are clear and explain the approach.
-- [x] I am making a pull request against the **dev branch** (left side).
-- [x] My commit message style matches our requested structure.
-- [x] My code additions will not fail code linting checks or unit tests.
-- [x] I am only making changes to files I was requested to.
+- [ ] My code follows the code style of this project.
+- [ ] This PR does not contain plagiarized content.
+- [ ] The title and description of the PR are clear and explain the approach.
+- [ ] I am making a pull request against the **dev branch** (left side).
+- [ ] My commit message style matches our requested structure.
+- [ ] My code additions will not fail code linting checks or unit tests.
+- [ ] I am only making changes to files I was requested to.
 
 ---
 
