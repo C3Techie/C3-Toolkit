@@ -1,0 +1,99 @@
+#!/bin/sh
+set -e
+
+FAILED=0
+
+# Exclude generated/binary/vendor files from long-line payloads check, but ALLOW checking of .ts and .tsx files
+LONG_LINE_EXCLUDE="pnpm-lock.yaml|yarn.lock|package-lock.json|.*\.min\.js|.*\.min\.css|.*\.map|.*\.lockb|.*\.svg|.*\.ico|.*\.png|.*\.jpg|.*\.JPEG|.*\.jpeg|.*\.webp|.*\.gif"
+
+# ── Detect repo type ──────────────────────────────────────────────────────────
+IS_PYTHON=0
+IS_NODE=0
+[ -f "pyproject.toml" ] || [ -f "setup.py" ] || [ -f "requirements.txt" ] && IS_PYTHON=1
+[ -f "package.json" ] && IS_NODE=1
+
+# ── File patterns to scan (by repo type) ─────────────────────────────────────
+if [ "$IS_PYTHON" -eq 1 ] && [ "$IS_NODE" -eq 0 ]; then
+  CONFIG_PATTERN="-name '*.py' -o -name 'pyproject.toml' -o -name 'setup.cfg' -o -name 'conftest.py' -o -name 'Makefile'"
+elif [ "$IS_PYTHON" -eq 1 ] && [ "$IS_NODE" -eq 1 ]; then
+  CONFIG_PATTERN="-name '*.mjs' -o -name '*.cjs' -o -name '*.config.*' -o -name 'postcss*' -o -name '*.py' -o -name 'pyproject.toml'"
+else
+  CONFIG_PATTERN="-name '*.mjs' -o -name '*.cjs' -o -name '*.config.*' -o -name 'postcss*'"
+fi
+
+STAGED=$(git diff --cached --name-only)
+
+# ── Scan staged files ─────────────────────────────────────────────────────────
+for file in $STAGED; do
+  [ -f "$file" ] || continue
+
+  # ── Check 1: Long lines (the hiding technique) ──────────────────────────────
+  BASENAME=$(basename "$file")
+  if echo "$BASENAME" | grep -qE "^($LONG_LINE_EXCLUDE)$"; then
+    : # skip silently
+  elif awk 'length > 200 { found=1; exit } END { exit !found }' "$file"; then
+    echo "❌ [long-line] $file — suspiciously long line detected (> 200 chars)."
+    echo "   Please review the file and break up the line or verify it is not a payload."
+    FAILED=1
+  fi
+
+  # ── Check 2: createRequire in a config file ─────────────────────────────────
+  if echo "$file" | grep -qE '\.(mjs|cjs|js|ts)$|postcss|config'; then
+    if grep -qE "createRequire|from 'module'" "$file" 2>/dev/null; then
+      echo "❌ [createRequire] $file — forbidden dynamic module loading helper (createRequire) detected."
+      echo "   Review manually — code-based shims are blocked in configuration files."
+      FAILED=1
+    fi
+  fi
+
+  # ── Check 3: Obfuscation patterns — cannot safely auto-fix, block commit ────
+  # These patterns may appear inside legitimate string content (tests, docs).
+  # A human must review before committing. Only check JS/TS files.
+  if echo "$file" | grep -qE '\.(mjs|cjs|js|ts|tsx)$'; then
+    for pattern in "String\.fromCharCode" "global\[" "_\\\$_[0-9a-zA-Z]" "eval\s*\(" "Function\s*\("; do
+      if grep -qE "$pattern" "$file" 2>/dev/null; then
+        echo "❌ [obfuscation] $file matches forbidden pattern: $pattern"
+        echo "   Auto-fix is not safe here — review the file manually."
+        FAILED=1
+      fi
+    done
+  fi
+
+  # ── Check 4: postcss.config.mjs size (Node repos only) ─────────────────────
+  if [ "$IS_NODE" -eq 1 ] && echo "$file" | grep -q "postcss"; then
+    SIZE=$(wc -c < "$file")
+    if [ "$SIZE" -gt 500 ]; then
+      echo "❌ [file-size] $file is $SIZE bytes (exceeds maximum allowed size of 500 bytes for PostCSS configs)."
+      echo "   Please review and minimize the file size."
+      FAILED=1
+    fi
+  fi
+
+  # ── Check 5: Python-specific — no exec/eval/compile in config files ─────────
+  if [ "$IS_PYTHON" -eq 1 ] && echo "$file" | grep -qE 'pyproject\.toml|setup\.(py|cfg)|conftest\.py'; then
+    for pattern in "exec\s*\(" "compile\s*\(" "__import__" "subprocess"; do
+      if grep -qE "$pattern" "$file" 2>/dev/null; then
+        echo "❌ [python-injection] $file matches forbidden pattern: $pattern"
+        echo "   Review manually — auto-fix is not safe for Python config files."
+        FAILED=1
+      fi
+    done
+  fi
+done
+
+# ── Check 6: Validate codebase state before commit ────────────────────────────
+if [ "$IS_NODE" -eq 1 ]; then
+  echo "🔍 Running TypeScript type-check..."
+  pnpm tsc --noEmit || { echo "❌ TypeScript compilation check failed."; exit 1; }
+
+  echo "🔍 Running ESLint..."
+  pnpm lint || { echo "❌ Lint check failed."; exit 1; }
+fi
+
+if [ "$FAILED" -eq 1 ]; then
+  echo ""
+  echo "❌ Commit blocked. Resolve the issues above manually, then re-commit."
+  exit 1
+fi
+
+exit 0
