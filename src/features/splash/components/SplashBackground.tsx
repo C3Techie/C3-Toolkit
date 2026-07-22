@@ -1,6 +1,6 @@
 import { LinearGradient } from "expo-linear-gradient";
 import React from "react";
-import { Platform, StyleSheet, useColorScheme, View } from "react-native";
+import { Platform, StyleSheet, useColorScheme, View, ViewStyle } from "react-native";
 
 import { colors } from "@/theme";
 
@@ -19,9 +19,7 @@ export function SplashBackground({ children }: { children?: React.ReactNode }) {
       <View
         style={[
           StyleSheet.absoluteFill,
-          {
-            backgroundImage,
-          } as any,
+          { backgroundImage } as unknown as ViewStyle,
         ]}
       >
         {children}

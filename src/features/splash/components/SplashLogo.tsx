@@ -53,7 +53,7 @@ export function SplashLogo() {
       -1, // Infinite loop.
       true, // Reverse each cycle for a smooth pulse.
     );
-  }, []);
+  }, [glowPulse, scale]);
 
   // Animated transform for the logo card.
   const logoAnimatedStyle = useAnimatedStyle(() => ({
