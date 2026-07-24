@@ -1,5 +1,6 @@
 import { Text, TextClassContext } from '@/components/ui/text';
 import { cn } from '@/lib/utils';
+import * as React from 'react';
 import { View } from 'react-native';
 
 function Card({ className, ...props }: React.ComponentProps<typeof View>) {

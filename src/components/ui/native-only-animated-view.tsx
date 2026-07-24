@@ -1,3 +1,4 @@
+import * as React from "react";
 import { Platform, Pressable } from "react-native";
 import Animated from "react-native-reanimated";
 

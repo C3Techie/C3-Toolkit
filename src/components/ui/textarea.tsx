@@ -1,5 +1,6 @@
 import { cn } from "@/lib/utils";
 import { colors } from "@/theme";
+import * as React from "react";
 import { Platform, TextInput, useColorScheme } from "react-native";
 
 function Textarea({

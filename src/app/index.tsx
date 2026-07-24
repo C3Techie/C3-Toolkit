@@ -59,16 +59,12 @@ export default function HomeScreen() {
               <Text className="font-sans text-body-sm text-on-surface-variant mt-1"></Text>
             </View>
 
-            {/* Interactive Theme Switcher using custom Button */}
-            <Button
-              variant="outline"
-              size="sm"
-              className="flex-row items-center gap-2"
-            >
-              <Text className="font-sans text-xs font-semibold text-on-surface">
-                {isDark ? "LIGHT MODE" : "DARK MODE"}
+            {/* Theme indicator — read-only (follows OS setting) */}
+            <View className="flex-row items-center gap-1.5 rounded-lg border border-outline-variant/30 px-3 py-1.5">
+              <Text className="font-sans text-xs font-semibold text-on-surface-variant">
+                {isDark ? "🌙 DARK" : "☀️ LIGHT"}
               </Text>
-            </Button>
+            </View>
           </View>
 
           {/* ── BENTO-STYLE UTILITY CARDS ── */}
