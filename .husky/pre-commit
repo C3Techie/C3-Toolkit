@@ -31,10 +31,18 @@ for file in $STAGED; do
   BASENAME=$(basename "$file")
   if echo "$BASENAME" | grep -qE "^($LONG_LINE_EXCLUDE)$"; then
     : # skip silently
-  elif awk 'length > 200 { found=1; exit } END { exit !found }' "$file"; then
-    echo "❌ [long-line] $file — suspiciously long line detected (> 200 chars)."
-    echo "   Please review the file and break up the line or verify it is not a payload."
-    FAILED=1
+  else
+    # Config files have a strict 200 char limit. Source code files have a 1000 char limit to allow long Tailwind classes.
+    LIMIT=200
+    if echo "$file" | grep -qE '\.(ts|tsx|js|jsx)$'; then
+      LIMIT=1000
+    fi
+
+    if awk -v limit="$LIMIT" 'length > limit { found=1; exit } END { exit !found }' "$file"; then
+      echo "❌ [long-line] $file — suspiciously long line detected (> $LIMIT chars)."
+      echo "   Please review the file and break up the line or verify it is not a payload."
+      FAILED=1
+    fi
   fi
 
   # ── Check 2: createRequire in a config file ─────────────────────────────────
