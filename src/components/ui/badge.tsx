@@ -6,27 +6,30 @@ import { Platform, View } from 'react-native';
 
 const badgeVariants = cva(
   cn(
-    'border-border group shrink-0 flex-row items-center justify-center gap-1 overflow-hidden rounded-full border px-2 py-0.5',
+    'group shrink-0 flex-row items-center justify-center gap-1 overflow-hidden rounded-full px-4 py-1.5 border border-transparent',
     Platform.select({
-      web: 'focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive w-fit whitespace-nowrap transition-[color,box-shadow] focus-visible:ring-[3px] [&>svg]:pointer-events-none [&>svg]:size-3',
+      web: 'focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive w-fit whitespace-nowrap transition-[color,box-shadow] focus-visible:ring-[3px] [&>svg]:pointer-events-none [&>svg]:size-3.5',
     })
   ),
   {
     variants: {
       variant: {
         default: cn(
-          'bg-primary border-transparent',
-          Platform.select({ web: '[a&]:hover:bg-primary/90' })
+          'bg-primary-container border-transparent',
+          Platform.select({ web: '[a&]:hover:opacity-95' })
         ),
         secondary: cn(
-          'bg-secondary border-transparent',
-          Platform.select({ web: '[a&]:hover:bg-secondary/90' })
+          'bg-secondary-container border-transparent',
+          Platform.select({ web: '[a&]:hover:opacity-95' })
         ),
         destructive: cn(
-          'bg-destructive border-transparent',
-          Platform.select({ web: '[a&]:hover:bg-destructive/90' })
+          'bg-error/10 border-error/25 border',
+          Platform.select({ web: '[a&]:hover:bg-error/15' })
         ),
-        outline: Platform.select({ web: '[a&]:hover:bg-accent [a&]:hover:text-accent-foreground' }),
+        outline: cn(
+          'border-outline bg-surface text-on-surface dark:border-outline-variant/30',
+          Platform.select({ web: '[a&]:hover:bg-accent [a&]:hover:text-accent-foreground' })
+        ),
       },
     },
     defaultVariants: {
@@ -35,13 +38,13 @@ const badgeVariants = cva(
   }
 );
 
-const badgeTextVariants = cva('text-xs font-medium', {
+const badgeTextVariants = cva('text-xs font-semibold uppercase tracking-wider', {
   variants: {
     variant: {
-      default: 'text-primary-foreground',
-      secondary: 'text-secondary-foreground',
-      destructive: 'text-white',
-      outline: 'text-foreground',
+      default: 'text-on-primary-container',
+      secondary: 'text-on-secondary-container',
+      destructive: 'text-error dark:text-error',
+      outline: 'text-on-surface dark:text-foreground',
     },
   },
   defaultVariants: {
@@ -49,7 +52,7 @@ const badgeTextVariants = cva('text-xs font-medium', {
   },
 });
 
-type BadgeProps = React.ComponentProps<typeof View> & React.RefAttributes<View> & {
+type BadgeProps = React.ComponentProps<typeof View> & {
   asChild?: boolean;
 } & VariantProps<typeof badgeVariants>;
 
@@ -64,3 +67,4 @@ function Badge({ className, variant, asChild, ...props }: BadgeProps) {
 
 export { Badge, badgeTextVariants, badgeVariants };
 export type { BadgeProps };
+

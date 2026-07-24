@@ -12,7 +12,7 @@ function Alert({
   icon,
   iconClassName,
   ...props
-}: React.ComponentProps<typeof View> & React.RefAttributes<View> & {
+}: React.ComponentProps<typeof View> & {
   icon: LucideIcon;
   variant?: 'default' | 'destructive';
   iconClassName?: string;
@@ -20,14 +20,13 @@ function Alert({
   return (
     <TextClassContext.Provider
       value={cn(
-        'text-sm text-foreground',
-        variant === 'destructive' && 'text-destructive',
-        className
+        'text-sm text-on-surface dark:text-foreground',
+        variant === 'destructive' && 'text-destructive'
       )}>
       <View
         role="alert"
         className={cn(
-          'bg-card border-border relative w-full rounded-lg border px-4 pb-2 pt-3.5',
+          'bg-surface-container-lowest dark:bg-surface-container-low border-outline-variant/30 dark:border-outline-variant/25 relative w-full rounded-[16px] border px-4 pb-2 pt-3.5',
           className
         )}
         {...props}>
@@ -63,7 +62,7 @@ function AlertDescription({
   return (
     <Text
       className={cn(
-        'text-muted-foreground ml-0.5 pb-1.5 pl-6 text-sm leading-relaxed',
+        'text-muted-foreground dark:text-on-surface-variant ml-0.5 pb-1.5 pl-6 text-sm leading-relaxed',
         textClass?.includes('text-destructive') && 'text-destructive/90',
         className
       )}
@@ -73,3 +72,4 @@ function AlertDescription({
 }
 
 export { Alert, AlertDescription, AlertTitle };
+

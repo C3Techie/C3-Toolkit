@@ -7,7 +7,7 @@ import type { VariantProps } from 'class-variance-authority';
 import * as React from 'react';
 import { Platform } from 'react-native';
 
-const ToggleGroupContext = React.createContext<VariantProps<typeof toggleVariants> | null>(null);
+const ToggleGroupContext = React.createContext<VariantProps<typeof toggleVariants>>({});
 
 function ToggleGroup({
   className,
@@ -20,7 +20,7 @@ function ToggleGroup({
   return (
     <ToggleGroupPrimitive.Root
       className={cn(
-        'flex flex-row items-center rounded-md shadow-none',
+        'flex flex-row items-center rounded-xl shadow-none',
         Platform.select({ web: 'w-fit' }),
         variant === 'outline' && 'shadow-sm shadow-black/5',
         className
@@ -34,13 +34,7 @@ function ToggleGroup({
 }
 
 function useToggleGroupContext() {
-  const context = React.useContext(ToggleGroupContext);
-  if (context === null) {
-    throw new Error(
-      'ToggleGroup compound components cannot be rendered outside the ToggleGroup component'
-    );
-  }
-  return context;
+  return React.useContext(ToggleGroupContext);
 }
 
 function ToggleGroupItem({
@@ -65,19 +59,19 @@ function ToggleGroupItem({
         'text-sm text-foreground font-medium',
         ToggleGroupPrimitive.utils.getIsSelected(value, props.value)
           ? 'text-accent-foreground'
-          : Platform.select({ web: 'group-hover:text-muted-foreground' })
+          : Platform.select({ web: 'group-hover:text-on-surface-variant' })
       )}>
       <ToggleGroupPrimitive.Item
         className={cn(
           toggleVariants({
-            variant: context.variant || variant,
-            size: context.size || size,
+            variant: context.variant ?? variant,
+            size: context.size ?? size,
           }),
           props.disabled && 'opacity-50',
-          ToggleGroupPrimitive.utils.getIsSelected(value, props.value) && 'bg-accent',
+          ToggleGroupPrimitive.utils.getIsSelected(value, props.value) && 'bg-surface-container-high dark:bg-surface-container-highest',
           'min-w-0 shrink-0 rounded-none shadow-none',
-          isFirst && 'rounded-l-md',
-          isLast && 'rounded-r-md',
+          isFirst && 'rounded-l-xl',
+          isLast && 'rounded-r-xl',
           (context.variant === 'outline' || variant === 'outline') && 'border-l-0',
           (context.variant === 'outline' || variant === 'outline') && isFirst && 'border-l',
           Platform.select({
@@ -98,3 +92,4 @@ function ToggleGroupIcon({ className, ...props }: React.ComponentProps<typeof Ic
 }
 
 export { ToggleGroup, ToggleGroupIcon, ToggleGroupItem };
+

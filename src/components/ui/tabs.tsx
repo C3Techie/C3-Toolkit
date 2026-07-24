@@ -17,7 +17,7 @@ function TabsList({
   return (
     <TabsPrimitive.List
       className={cn(
-        'bg-muted flex h-9 flex-row items-center justify-center rounded-lg p-[3px]',
+        'bg-surface-container-lowest border border-outline-variant/20 flex h-11 flex-row items-center justify-center rounded-lg p-1 dark:bg-surface-container-lowest/80 dark:border-outline-variant/10',
         Platform.select({ web: 'inline-flex w-fit', native: 'mr-auto' }),
         className
       )}
@@ -31,20 +31,23 @@ function TabsTrigger({
   ...props
 }: React.ComponentProps<typeof TabsPrimitive.Trigger>) {
   const { value } = TabsPrimitive.useRootContext();
+  const isActive = props.value === value;
+  
   return (
     <TextClassContext.Provider
       value={cn(
-        'text-foreground dark:text-muted-foreground text-sm font-medium',
-        value === props.value && 'dark:text-foreground'
+        'text-on-surface-variant text-sm font-medium',
+        Platform.select({ web: 'transition-colors' }),
+        isActive && 'text-on-secondary-container dark:text-on-secondary-container font-semibold'
       )}>
       <TabsPrimitive.Trigger
         className={cn(
-          'flex h-[calc(100%-1px)] flex-row items-center justify-center gap-1.5 rounded-md border border-transparent px-2 py-1 shadow-none shadow-black/5',
+          'flex h-[calc(100%-1px)] flex-row items-center justify-center gap-1.5 rounded-md border border-transparent px-4 py-1.5 shadow-none transition-all',
           Platform.select({
-            web: 'focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:outline-ring inline-flex cursor-default whitespace-nowrap transition-[color,box-shadow] focus-visible:outline-1 focus-visible:ring-[3px] disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0',
+            web: 'focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:outline-ring inline-flex cursor-default whitespace-nowrap focus-visible:outline-1 focus-visible:ring-[3px] disabled:pointer-events-none [&_svg]:pointer-events-none [&_svg]:shrink-0',
           }),
           props.disabled && 'opacity-50',
-          props.value === value && 'bg-background dark:border-foreground/10 dark:bg-input/30',
+          isActive && 'bg-secondary-container shadow-sm dark:bg-secondary-container',
           className
         )}
         {...props}
@@ -66,3 +69,4 @@ function TabsContent({
 }
 
 export { Tabs, TabsContent, TabsList, TabsTrigger };
+

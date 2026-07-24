@@ -34,7 +34,7 @@ function HoverCardContent({
                 align={align}
                 sideOffset={sideOffset}
                 className={cn(
-                  'bg-popover border-border outline-hidden z-50 w-64 rounded-md border p-4 shadow-md shadow-black/5',
+                  'bg-surface-container-lowest dark:bg-surface-container-low border-outline-variant/30 dark:border-outline-variant/25 outline-hidden z-50 w-64 rounded-[16px] border p-4 shadow-md shadow-black/5 dark:shadow-none',
                   Platform.select({
                     web: cn(
                       'animate-in fade-in-0 zoom-in-95 origin-(--radix-hover-card-content-transform-origin) cursor-default [&>*]:cursor-auto',

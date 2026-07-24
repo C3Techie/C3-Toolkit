@@ -5,7 +5,7 @@ import { Platform, Pressable } from 'react-native';
 
 const buttonVariants = cva(
   cn(
-    'group shrink-0 flex-row items-center justify-center gap-2 rounded-md shadow-none',
+    'group shrink-0 flex-row items-center justify-center gap-2 rounded-xl border border-transparent shadow-none',
     Platform.select({
       web: "focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive whitespace-nowrap outline-none transition-all focus-visible:ring-[3px] disabled:pointer-events-none [&_svg:not([class*='size-'])]:size-4 [&_svg]:pointer-events-none [&_svg]:shrink-0",
     })
@@ -14,36 +14,36 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default: cn(
-          'bg-primary active:bg-primary/90 shadow-sm shadow-black/5',
-          Platform.select({ web: 'hover:bg-primary/90' })
+          'bg-primary active:bg-primary/90 shadow-md shadow-black/10 dark:shadow-none',
+          Platform.select({ web: 'hover:opacity-90 active:scale-[0.98]' })
         ),
         destructive: cn(
-          'bg-destructive active:bg-destructive/90 dark:bg-destructive/60 shadow-sm shadow-black/5',
+          'bg-destructive active:bg-destructive/90 dark:bg-destructive/60 shadow-sm',
           Platform.select({
-            web: 'hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40',
+            web: 'hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 active:scale-[0.98]',
           })
         ),
         outline: cn(
-          'border-border bg-background active:bg-accent dark:bg-input/30 dark:border-input dark:active:bg-input/50 border shadow-sm shadow-black/5',
+          'border-outline-variant bg-transparent active:bg-accent dark:border-outline-variant/30 border shadow-none',
           Platform.select({
-            web: 'hover:bg-accent dark:hover:bg-input/50',
+            web: 'hover:bg-accent dark:hover:bg-input/50 active:scale-[0.98]',
           })
         ),
         secondary: cn(
-          'bg-secondary active:bg-secondary/80 shadow-sm shadow-black/5',
-          Platform.select({ web: 'hover:bg-secondary/80' })
+          'bg-secondary active:bg-secondary/80 dark:bg-secondary-container shadow-sm',
+          Platform.select({ web: 'hover:opacity-90 active:scale-[0.98]' })
         ),
         ghost: cn(
           'active:bg-accent dark:active:bg-accent/50',
-          Platform.select({ web: 'hover:bg-accent dark:hover:bg-accent/50' })
+          Platform.select({ web: 'hover:bg-accent dark:hover:bg-accent/50 active:scale-[0.98]' })
         ),
         link: '',
       },
       size: {
-        default: cn('h-10 px-4 py-2 sm:h-9', Platform.select({ web: 'has-[>svg]:px-3' })),
-        sm: cn('h-9 gap-1.5 rounded-md px-3 sm:h-8', Platform.select({ web: 'has-[>svg]:px-2.5' })),
-        lg: cn('h-11 rounded-md px-6 sm:h-10', Platform.select({ web: 'has-[>svg]:px-4' })),
-        icon: 'h-10 w-10 sm:h-9 sm:w-9',
+        default: cn('h-12 px-6 py-3', Platform.select({ web: 'has-[>svg]:px-4' })),
+        sm: cn('h-9 gap-1.5 rounded-lg px-3', Platform.select({ web: 'has-[>svg]:px-2.5' })),
+        lg: cn('h-14 rounded-2xl px-8', Platform.select({ web: 'has-[>svg]:px-6' })),
+        icon: 'h-12 w-12',
       },
     },
     defaultVariants: {
@@ -61,13 +61,13 @@ const buttonTextVariants = cva(
   {
     variants: {
       variant: {
-        default: 'text-primary-foreground',
-        destructive: 'text-white',
+        default: 'text-primary-foreground font-semibold',
+        destructive: 'text-white font-semibold',
         outline: cn(
-          'group-active:text-accent-foreground',
+          'text-on-surface group-active:text-accent-foreground',
           Platform.select({ web: 'group-hover:text-accent-foreground' })
         ),
-        secondary: 'text-secondary-foreground',
+        secondary: 'text-secondary-foreground dark:text-on-secondary-container font-semibold',
         ghost: 'group-active:text-accent-foreground',
         link: cn(
           'text-primary group-active:underline',
@@ -75,9 +75,9 @@ const buttonTextVariants = cva(
         ),
       },
       size: {
-        default: '',
-        sm: '',
-        lg: '',
+        default: 'text-base',
+        sm: 'text-xs',
+        lg: 'text-lg',
         icon: '',
       },
     },
@@ -88,7 +88,7 @@ const buttonTextVariants = cva(
   }
 );
 
-type ButtonProps = React.ComponentProps<typeof Pressable> & React.RefAttributes<typeof Pressable> & VariantProps<typeof buttonVariants>;
+type ButtonProps = React.ComponentProps<typeof Pressable> & VariantProps<typeof buttonVariants>;
 
 function Button({ className, variant, size, ...props }: ButtonProps) {
   return (
@@ -104,3 +104,4 @@ function Button({ className, variant, size, ...props }: ButtonProps) {
 
 export { Button, buttonTextVariants, buttonVariants };
 export type { ButtonProps };
+

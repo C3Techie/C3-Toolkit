@@ -1,26 +1,38 @@
-import { cn } from '@/lib/utils';
-import { Platform, TextInput } from 'react-native';
+import { cn } from "@/lib/utils";
+import { colors } from "@/theme";
+import { Platform, TextInput, useColorScheme } from "react-native";
 
-function Input({ className, ...props }: React.ComponentProps<typeof TextInput> & React.RefAttributes<TextInput>) {
+function Input({
+  className,
+  ...props
+}: React.ComponentProps<typeof TextInput>) {
+  const colorScheme = useColorScheme();
+  const themeColors = colors[colorScheme === "dark" ? "dark" : "light"];
+
   return (
     <TextInput
       className={cn(
-        'dark:bg-input/30 border-input bg-background text-foreground flex h-10 w-full min-w-0 flex-row items-center rounded-md border px-3 py-1 text-base leading-5 shadow-sm shadow-black/5 sm:h-9',
+        "w-full h-12 bg-surface-container-low border-2 border-transparent text-on-surface rounded-[12px] px-4 text-base leading-5 transition-all",
+        "dark:bg-background dark:border dark:border-outline-variant/30 dark:text-foreground",
         props.editable === false &&
-        cn(
-          'opacity-50',
-          Platform.select({ web: 'disabled:pointer-events-none disabled:cursor-not-allowed' })
-        ),
+          cn(
+            "opacity-50",
+            Platform.select({
+              web: "disabled:pointer-events-none disabled:cursor-not-allowed",
+            }),
+          ),
         Platform.select({
           web: cn(
-            'placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground outline-none transition-[color,box-shadow] md:text-sm',
-            'focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]',
-            'aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive'
+            "selection:bg-primary selection:text-primary-foreground outline-none transition-[color,background-color,border-color]",
+            "focus-visible:border-primary focus-visible:bg-surface-container-lowest",
+            "dark:focus-visible:border-primary dark:focus-visible:ring-1 dark:focus-visible:ring-primary/20 dark:focus-visible:bg-background",
+            "aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
           ),
-          native: 'placeholder:text-muted-foreground/50',
+          native: "placeholder:text-outline/40",
         }),
-        className
+        className,
       )}
+      placeholderTextColor={themeColors.outline + "80"}
       {...props}
     />
   );

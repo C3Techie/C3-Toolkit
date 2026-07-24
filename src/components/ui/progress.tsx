@@ -2,11 +2,11 @@ import { cn } from '@/lib/utils';
 import * as ProgressPrimitive from '@rn-primitives/progress';
 import { Platform, View } from 'react-native';
 import Animated, {
-  Extrapolation,
-  interpolate,
-  useAnimatedStyle,
-  useDerivedValue,
-  withSpring,
+    Extrapolation,
+    interpolate,
+    useAnimatedStyle,
+    useDerivedValue,
+    withSpring,
 } from 'react-native-reanimated';
 
 function Progress({
@@ -19,7 +19,10 @@ function Progress({
 }) {
   return (
     <ProgressPrimitive.Root
-      className={cn('bg-primary/20 relative h-2 w-full overflow-hidden rounded-full', className)}
+      className={cn(
+        'bg-surface-container-highest dark:bg-surface-container-highest relative h-2 w-full overflow-hidden rounded-full',
+        className
+      )}
       {...props}>
       <Indicator value={value} className={indicatorClassName} />
     </ProgressPrimitive.Root>
@@ -28,22 +31,17 @@ function Progress({
 
 export { Progress };
 
-const Indicator = Platform.select({
-  web: WebIndicator,
-  native: NativeIndicator,
-  default: NullIndicator,
-});
-
 type IndicatorProps = {
   value: number | undefined | null;
   className?: string;
 };
 
-function WebIndicator({ value, className }: IndicatorProps) {
-  if (Platform.OS !== 'web') {
-    return null;
-  }
+const Indicator = Platform.select({
+  web: WebIndicator,
+  native: NativeIndicator,
+}) ?? NullIndicator;
 
+function WebIndicator({ value, className }: IndicatorProps) {
   return (
     <View
       className={cn('bg-primary h-full w-full flex-1 transition-all', className)}
@@ -65,17 +63,13 @@ function NativeIndicator({ value, className }: IndicatorProps) {
     };
   }, [value]);
 
-  if (Platform.OS === 'web') {
-    return null;
-  }
-
   return (
     <ProgressPrimitive.Indicator asChild>
-      <Animated.View style={indicator} className={cn('bg-foreground h-full', className)} />
+      <Animated.View style={indicator} className={cn('bg-primary h-full', className)} />
     </ProgressPrimitive.Indicator>
   );
 }
 
 function NullIndicator(_props: IndicatorProps) {
-  return null;
+  return <></>;
 }
