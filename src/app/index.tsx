@@ -1,7 +1,6 @@
 import { colors, icons } from "@/theme";
-import { useColorScheme } from "react-native";
 import { useState } from "react";
-import { ScrollView, Text, View } from "react-native";
+import { ScrollView, Text, useColorScheme, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 // Import our custom UI components
