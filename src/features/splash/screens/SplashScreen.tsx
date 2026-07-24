@@ -1,14 +1,14 @@
+import { Text } from "@/components/ui/text";
 import { APP_NAME, APP_TAGLINE } from "@/constants";
 import { motion } from "@/theme";
 
 import * as ExpoSplashScreen from "expo-splash-screen";
-import { useColorScheme } from "nativewind";
 import { useCallback, useEffect } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View, useColorScheme } from "react-native";
 import Animated, {
-  useAnimatedStyle,
-  useSharedValue,
-  withTiming,
+    useAnimatedStyle,
+    useSharedValue,
+    withTiming,
 } from "react-native-reanimated";
 
 import { SplashBackground } from "../components/SplashBackground";
@@ -22,7 +22,7 @@ interface SplashScreenProps {
 }
 
 export function SplashScreen({ onAnimationComplete }: SplashScreenProps) {
-  const { colorScheme } = useColorScheme();
+  const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
   const { currentMessage, isExiting } = useSplash(onAnimationComplete);
   const screenOpacity = useSharedValue(1);
@@ -40,20 +40,6 @@ export function SplashScreen({ onAnimationComplete }: SplashScreenProps) {
     opacity: screenOpacity.value,
   }));
 
-  // Theme-specific title typography.
-  const titleClassName = isDark
-    ? "font-sans text-headline-xl text-primary mb-4 tracking-tight drop-shadow-md text-center"
-    : "font-sans text-headline-lg-mobile md:text-headline-lg text-on-surface mb-2 text-center";
-
-  // Theme-specific tagline typography.
-  const taglineClassName = isDark
-    ? "font-sans text-body-lg text-on-surface-variant max-w-md mx-auto opacity-90 text-center"
-    : "font-sans text-body-md text-on-surface-variant text-center";
-
-  const hideNativeSplash = useCallback(() => {
-    ExpoSplashScreen.hideAsync().catch(() => {});
-  }, []);
-
   const topBlobStyle = {
     top: motion.splash.ambientBlobOffset,
     left: motion.splash.ambientBlobOffset,
@@ -68,13 +54,16 @@ export function SplashScreen({ onAnimationComplete }: SplashScreenProps) {
     height: motion.splash.ambientBlobSize,
   };
 
+  const hideNativeSplash = useCallback(() => {
+    ExpoSplashScreen.hideAsync().catch(() => {});
+  }, []);
+
   return (
     <Animated.View
       style={[StyleSheet.absoluteFill, styles.overlay, fadeOutStyle]}
       onLayout={hideNativeSplash}
     >
       <SplashBackground>
-        {/* Dark theme */}
         {isDark && (
           <View className="absolute inset-0 pointer-events-none overflow-hidden opacity-10">
             <View
@@ -89,29 +78,39 @@ export function SplashScreen({ onAnimationComplete }: SplashScreenProps) {
         )}
 
         <View className="flex-1 items-center justify-center px-4 md:px-12 z-10 relative">
-          {/* Logo container */}
           <View className="mb-8">
             <SplashLogo />
           </View>
 
-          {/* App title */}
-          <Text className={titleClassName}>{APP_NAME}</Text>
+          <Text
+            className={
+              isDark
+                ? "font-sans text-headline-xl text-primary mb-4 tracking-tight drop-shadow-md text-center"
+                : "font-sans text-headline-lg-mobile md:text-headline-lg text-on-surface mb-2 text-center"
+            }
+          >
+            {APP_NAME}
+          </Text>
 
-          {/* App tagline */}
-          <Text className={taglineClassName}>{APP_TAGLINE}</Text>
+          <Text
+            className={
+              isDark
+                ? "font-sans text-body-lg text-on-surface-variant max-w-md mx-auto opacity-90 text-center"
+                : "font-sans text-body-md text-on-surface-variant text-center"
+            }
+          >
+            {APP_TAGLINE}
+          </Text>
 
-          {/* Subtitle with message rotation */}
           <Text className="text-sm font-medium text-on-surface-variant/50 dark:text-on-surface-variant/40 mt-6 h-5">
             {currentMessage}
           </Text>
 
-          {/* Staggered bouncing loading dots */}
           <View className="mt-12">
             <SplashDots />
           </View>
         </View>
 
-        {/* Light theme bottom wave */}
         {!isDark && <WaveSvg />}
       </SplashBackground>
     </Animated.View>
