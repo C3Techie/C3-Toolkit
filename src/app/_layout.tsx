@@ -28,13 +28,10 @@ export default function RootLayout() {
 
   return (
     <ThemeProvider value={NAV_THEME[isDark ? "dark" : "light"]}>
-      {splashVisible ? (
+      <Slot />
+      <PortalHost />
+      {splashVisible && (
         <AppSplashScreen onAnimationComplete={() => setSplashVisible(false)} />
-      ) : (
-        <>
-          <Slot />
-          <PortalHost />
-        </>
       )}
     </ThemeProvider>
   );

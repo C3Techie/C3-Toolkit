@@ -1,3 +1,4 @@
+import { router } from "expo-router";
 import { useMemo, useState } from "react";
 import { ScrollView, View } from "react-native";
 import { DashboardHeader } from "../components/DashboardHeader";
@@ -16,18 +17,19 @@ export function DashboardScreen() {
     return TOOLS.filter(
       (t) =>
         t.title.toLowerCase().includes(q) ||
-        t.description.toLowerCase().includes(q)
+        t.description.toLowerCase().includes(q),
     );
   }, [searchQuery]);
 
-  const handleToolPress = (_tool: Tool) => {
+  const handleToolPress = (tool: Tool) => {
+    router.push(tool.href as never);
   };
 
   const handleViewHistory = () => {
+    router.push("/(tabs)/history");
   };
 
-  const handleUpgrade = () => {
-  };
+  const handleUpgrade = () => {};
 
   return (
     <ScrollView

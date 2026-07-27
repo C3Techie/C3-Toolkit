@@ -14,10 +14,10 @@ const ACCENT_ICON_BG: Record<ToolAccentColor, string> = {
 };
 
 const ACCENT_BLOB_COLOR: Record<ToolAccentColor, string> = {
-  primary: "bg-primary/5 dark:bg-primary/8",
-  secondary: "bg-secondary/5 dark:bg-secondary/8",
-  tertiary: "bg-tertiary/5 dark:bg-tertiary/8",
-  neutral: "bg-on-surface/5 dark:bg-on-surface/8",
+  primary: "bg-primary/5 dark:bg-primary/10",
+  secondary: "bg-secondary/5 dark:bg-secondary/10",
+  tertiary: "bg-tertiary/5 dark:bg-tertiary/10",
+  neutral: "bg-on-surface/5 dark:bg-on-surface/10",
 };
 
 const ACCENT_CTA_CLASS: Record<ToolAccentColor, string> = {
