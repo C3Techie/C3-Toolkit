@@ -1,18 +1,17 @@
 import "../global.css";
 
 import { PortalHost } from "@rn-primitives/portal";
-import { ThemeProvider } from "expo-router";
+import { Slot, ThemeProvider } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect, useState } from "react";
 import { Platform, useColorScheme } from "react-native";
 
-import AppTabs from "@/components/app-tabs";
 import { SplashScreen as AppSplashScreen } from "@/features/splash/screens/SplashScreen";
 import { NAV_THEME } from "@/lib/navigation-theme";
 
 SplashScreen.preventAutoHideAsync();
 
-export default function TabLayout() {
+export default function RootLayout() {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
   const [splashVisible, setSplashVisible] = useState(true);
@@ -29,11 +28,11 @@ export default function TabLayout() {
 
   return (
     <ThemeProvider value={NAV_THEME[isDark ? "dark" : "light"]}>
+      <Slot />
+      <PortalHost />
       {splashVisible && (
         <AppSplashScreen onAnimationComplete={() => setSplashVisible(false)} />
       )}
-      <AppTabs />
-      <PortalHost />
     </ThemeProvider>
   );
 }
