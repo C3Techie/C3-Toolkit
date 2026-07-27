@@ -2,7 +2,8 @@ import { cn } from "@/lib/utils";
 import { Slot } from "@rn-primitives/slot";
 import { cva, type VariantProps } from "class-variance-authority";
 import * as React from "react";
-import { Platform, Text as RNText, type Role } from "react-native";
+import { Platform, Text as RNText, StyleSheet, type Role } from "react-native";
+
 
 const textVariants = cva(
   cn(
@@ -15,17 +16,17 @@ const textVariants = cva(
     variants: {
       variant: {
         default: "",
-        headlineXl: "text-headline-xl font-bold tracking-tight",
-        headlineLg: "text-headline-lg font-bold tracking-tight",
-        headlineLgMobile: "text-headline-lg-mobile font-bold tracking-tight",
-        headlineMd: "text-headline-md font-semibold tracking-tight",
-        titleLg: "text-title-lg font-semibold tracking-tight",
-        sectionHeading: "text-section-heading font-semibold tracking-tight",
-        bodyLg: "text-body-lg font-normal leading-relaxed",
-        bodyMd: "text-body-md font-normal leading-normal",
-        bodySm: "text-body-sm font-normal leading-normal",
-        labelMd: "text-label-md font-semibold uppercase tracking-wider",
-        labelSm: "text-label-sm font-medium",
+        headlineXl: "font-bold tracking-tight",
+        headlineLg: "font-bold tracking-tight",
+        headlineLgMobile: "font-bold tracking-tight",
+        headlineMd: "font-semibold tracking-tight",
+        titleLg: "font-semibold tracking-tight",
+        sectionHeading: "font-semibold tracking-tight",
+        bodyLg: "font-normal leading-relaxed",
+        bodyMd: "font-normal leading-normal",
+        bodySm: "font-normal leading-normal",
+        labelMd: "font-semibold uppercase tracking-wider",
+        labelSm: "font-medium",
         h1: cn(
           "text-center text-4xl font-extrabold tracking-tight",
           Platform.select({ web: "scroll-m-20 text-balance" }),
@@ -86,12 +87,27 @@ const ARIA_LEVEL: Partial<Record<TextVariant, string>> = {
   headlineMd: "3",
 };
 
+const variantFontStyle = StyleSheet.create({
+  headlineXl: { fontSize: 48, lineHeight: 56, letterSpacing: -0.96 },
+  headlineLg: { fontSize: 32, lineHeight: 40, letterSpacing: -0.32 },
+  headlineLgMobile: { fontSize: 24, lineHeight: 32 },
+  headlineMd: { fontSize: 24, lineHeight: 32 },
+  titleLg: { fontSize: 22, lineHeight: 28 },
+  sectionHeading: { fontSize: 18, lineHeight: 24 },
+  bodyLg: { fontSize: 18, lineHeight: 28 },
+  bodyMd: { fontSize: 16, lineHeight: 24 },
+  bodySm: { fontSize: 14, lineHeight: 20 },
+  labelMd: { fontSize: 14, lineHeight: 16 },
+  labelSm: { fontSize: 12, lineHeight: 14 },
+});
+
 const TextClassContext = React.createContext<string | undefined>(undefined);
 
 function Text({
   className,
   asChild = false,
   variant = "default",
+  style,
   ...props
 }: React.ComponentProps<typeof RNText> &
   TextVariantProps & {
@@ -99,11 +115,15 @@ function Text({
   }) {
   const textClass = React.useContext(TextClassContext);
   const Component = asChild ? Slot : RNText;
+  const fontStyle = variant && variant in variantFontStyle
+    ? variantFontStyle[variant as keyof typeof variantFontStyle]
+    : undefined;
   return (
     <Component
       className={cn(textVariants({ variant }), textClass, className)}
       role={variant ? ROLE[variant] : undefined}
       aria-level={variant ? ARIA_LEVEL[variant] : undefined}
+      style={[fontStyle, style]}
       {...props}
     />
   );
