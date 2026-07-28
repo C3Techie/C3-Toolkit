@@ -20,7 +20,7 @@ export const TOOLS: Tool[] = [
       "Seamlessly convert between length, weight, temperature, and volume metrics with precision.",
     icon: RefreshCw,
     accent: "primary",
-    href: "/converter",
+    href: "/(tabs)/converter",
   },
   {
     id: "bmi-calculator",
@@ -29,7 +29,7 @@ export const TOOLS: Tool[] = [
       "Quickly determine your Body Mass Index and track your health metrics over time.",
     icon: Calculator,
     accent: "secondary",
-    href: "/bmi",
+    href: "/(tabs)/bmi",
   },
   {
     id: "age-calculator",
@@ -38,7 +38,7 @@ export const TOOLS: Tool[] = [
       "Calculate exact age in years, months, and days down to the minute.",
     icon: Cake,
     accent: "tertiary",
-    href: "/age",
+    href: "/(tabs)/age",
   },
   {
     id: "tip-calculator",
@@ -47,6 +47,6 @@ export const TOOLS: Tool[] = [
       "Effortlessly split bills and calculate precise gratuity percentages on the fly.",
     icon: Wallet,
     accent: "neutral",
-    href: "/tip",
+    href: "/(tabs)/tip",
   },
 ];

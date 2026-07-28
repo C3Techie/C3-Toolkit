@@ -35,33 +35,34 @@ export default function TabsLayout() {
         },
       }}
     >
+      {/* Visible tabs */}
       <Tabs.Screen
         name="index"
         options={{
           title: "Home",
-          tabBarIcon: ({ color, size }) => (
-            <HomeIcon size={size} color={color} />
-          ),
+          tabBarIcon: ({ color, size }) => <HomeIcon size={size} color={color} />,
         }}
       />
       <Tabs.Screen
         name="history"
         options={{
           title: "History",
-          tabBarIcon: ({ color, size }) => (
-            <HistoryIcon size={size} color={color} />
-          ),
+          tabBarIcon: ({ color, size }) => <HistoryIcon size={size} color={color} />,
         }}
       />
       <Tabs.Screen
         name="settings"
         options={{
           title: "Settings",
-          tabBarIcon: ({ color, size }) => (
-            <SettingsIcon size={size} color={color} />
-          ),
+          tabBarIcon: ({ color, size }) => <SettingsIcon size={size} color={color} />,
         }}
       />
+
+      {/* Tool screens — tab bar stays visible, no tab item shown */}
+      <Tabs.Screen name="converter" options={{ tabBarItemStyle: { display: "none" } }} />
+      <Tabs.Screen name="bmi" options={{ tabBarItemStyle: { display: "none" } }} />
+      <Tabs.Screen name="age" options={{ tabBarItemStyle: { display: "none" } }} />
+      <Tabs.Screen name="tip" options={{ tabBarItemStyle: { display: "none" } }} />
     </Tabs>
   );
 }
