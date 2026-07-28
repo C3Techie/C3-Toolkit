@@ -36,6 +36,8 @@ export function CategoryChip({ category, isActive, onPress }: CategoryChipProps)
   return (
     <Pressable
       onPress={() => onPress(category.id)}
+      accessibilityRole="button"
+      accessibilityState={{ selected: isActive }}
       className={cn(
         "flex-row items-center gap-1.5 px-4 py-2 rounded-full",
         isActive

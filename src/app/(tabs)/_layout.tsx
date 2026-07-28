@@ -35,7 +35,6 @@ export default function TabsLayout() {
         },
       }}
     >
-      {/* Visible tabs */}
       <Tabs.Screen
         name="index"
         options={{
@@ -58,11 +57,10 @@ export default function TabsLayout() {
         }}
       />
 
-      {/* Tool screens — tab bar stays visible, no tab item shown */}
-      <Tabs.Screen name="converter" options={{ tabBarItemStyle: { display: "none" } }} />
-      <Tabs.Screen name="bmi" options={{ tabBarItemStyle: { display: "none" } }} />
-      <Tabs.Screen name="age" options={{ tabBarItemStyle: { display: "none" } }} />
-      <Tabs.Screen name="tip" options={{ tabBarItemStyle: { display: "none" } }} />
+      <Tabs.Screen name="converter" options={{ href: null }} />
+      <Tabs.Screen name="bmi" options={{ href: null }} />
+      <Tabs.Screen name="age" options={{ href: null }} />
+      <Tabs.Screen name="tip" options={{ href: null }} />
     </Tabs>
   );
 }

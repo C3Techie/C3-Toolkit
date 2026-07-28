@@ -49,6 +49,16 @@ export function useUnitConverter() {
     setResult(null);
   }, [fromUnit, toUnit]);
 
+  const selectFromUnit = useCallback((unit: Unit) => {
+    setFromUnit(unit);
+    setResult(null);
+  }, []);
+
+  const selectToUnit = useCallback((unit: Unit) => {
+    setToUnit(unit);
+    setResult(null);
+  }, []);
+
   const handleConvert = useCallback(() => {
     const error = validateInput(inputValue);
     if (error) {
@@ -58,6 +68,12 @@ export function useUnitConverter() {
 
     const numericInput = Number(inputValue);
     const converted = convert(numericInput, fromUnit.id, toUnit.id, activeCategoryId);
+
+    if (!isFinite(converted)) {
+      setInputError("Result is not a valid number.");
+      return;
+    }
+
     const formatted = formatResult(converted);
     setResult(formatted);
 
@@ -90,10 +106,10 @@ export function useUnitConverter() {
     isInputValid,
     result,
     recentConversions,
-    setFromUnit,
-    setToUnit,
     handleInputChange,
     selectCategory,
+    selectFromUnit,
+    selectToUnit,
     swapUnits,
     handleConvert,
     clearRecentConversions,

@@ -15,10 +15,10 @@ export function UnitConverterScreen() {
     isInputValid,
     result,
     recentConversions,
-    setFromUnit,
-    setToUnit,
     handleInputChange,
     selectCategory,
+    selectFromUnit,
+    selectToUnit,
     swapUnits,
     handleConvert,
     clearRecentConversions,
@@ -45,8 +45,8 @@ export function UnitConverterScreen() {
         inputError={inputError}
         isInputValid={isInputValid}
         result={result}
-        onFromUnitChange={setFromUnit}
-        onToUnitChange={setToUnit}
+        onFromUnitChange={selectFromUnit}
+        onToUnitChange={selectToUnit}
         onInputChange={handleInputChange}
         onSwap={swapUnits}
         onConvert={handleConvert}
